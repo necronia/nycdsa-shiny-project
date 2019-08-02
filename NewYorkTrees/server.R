@@ -22,20 +22,28 @@ server <- function(input, output, session) {
     })
     
     output$treemap <- renderLeaflet({
-        neStates <- subset(df, df$nta %in% c(
-            "QN17","QN49","BK90"
-        ))
         
-        leaflet(df) %>%
-            addTiles('Trees of NY') %>%
+        #bins <- c(0,30, 60, 90, 120, 150, 180, Inf)
+        #pal <- colorBin("viridis", domain = NULL, bins = bins)
+        pal <- colorNumeric("Greens", NULL)
+        
+        leaflet(nta) %>%
             setView(-74.00, 40.71, zoom = 10) %>%
             addProviderTiles("CartoDB.Positron") %>% 
-            addPolygons(color = "#444444", weight = 1, smoothFactor = 0.5,
-                        opacity = 1.0, fillOpacity = 0.5,
-                        fillColor = ~colorQuantile("YlOrRd", ALAND)(ALAND),
-                        highlightOptions = highlightOptions(color = "white", weight = 2,
-                                                            bringToFront = TRUE))
-            
+            addPolygons(label=~ntaname,
+                        fillColor = ~pal(count),
+                        color = 'white',
+                        weight = 1,
+                        smoothFactor = 0.5,
+                        opacity = 0.5,
+                        fillOpacity = 0.5,
+                        highlightOptions = highlightOptions(color = "black",
+                                                            weight = 1,
+                                                            bringToFront = T)) 
+        # %>%
+        #     addLegend(pal = pal, values = ~log10(pop), opacity = 1.0,
+        #               labFormat = labelFormat(transform = function(x) round(10^x)))
+        #     
         # leaflet(Andrew) %>%
         #     addProviderTiles("Esri.WorldStreetMap") %>%
         #     addPolylines(~Long, ~Lat)

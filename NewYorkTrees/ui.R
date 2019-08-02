@@ -1,7 +1,7 @@
 shinyUI(dashboardPage(
   dashboardHeader(title = 'NYC Tree Dashboard'),
   dashboardSidebar(
-    sidebarUserPanel(name = 'category'),
+    #sidebarUserPanel(name = 'aaa'),
     sidebarMenu(
       menuItem(text = 'Distribution',tabName = 'distribution', icon = icon('map')),
       menuItem(text = 'Map',tabName = 'map', icon = icon('map'))

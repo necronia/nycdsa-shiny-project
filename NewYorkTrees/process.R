@@ -14,5 +14,5 @@ df = read.csv("../tree_data_raw.csv", stringsAsFactors = F)
 
 saveRDS(df, "./tree_data.rds")
 
-sample_data <- df[c(1:1000),]
+sample_data <- df[c(1:10000),]
 saveRDS(sample_data, "./sample_data.rds")
