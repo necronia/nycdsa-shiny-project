@@ -8,38 +8,15 @@ library(dplyr)
 library(DT)
 library(tidyverse)
 
-#df <- readRDS("./sample_data.rds")
-df <- readRDS('./tree_data.rds')
-df <- df %>% 
-  mutate(location = paste0(df$latitude,':',df$longitude))
+tree_df <- readRDS('./tree_data.rds')
+tree_df_sample = tree_df[sample(nrow(tree_df),50000),]
+air_df <- readRDS('./air_data.rds')
+air_311_df <- readRDS('./air_311_data.rds')
 
-nta <- geojsonio::geojson_read("json/NTAmap.geojson", what = "sp")
+#nta_map <- geojsonio::geojson_read("./NTAmap.geojson", what = "sp")
+#zip_map <- geojsonio::geojson_read("./ZIPmap.geojson", what = "sp")
+nta_map <- readRDS('./nta_map.rds')
+zip_map <- readRDS('./zip_map.rds')
 
-choice <- colnames(df)[4:5]
+choice <- colnames(as.data.frame(nta_map))[8:9]
 
-length(nta)
-nta$test = c(1:195)
-nta$test
-
-test <- df %>% 
-  group_by(nta) %>% 
-  summarise(cnt = n())
-
-test %>% 
-  summarise(sum(cnt))
-
-nta$ntacode
-t = data.frame(nta = nta$ntacode)
-t = left_join(t, test, by='nta')
-t <- t %>% 
-  transmute(cnt = ifelse(is.na(cnt),0,cnt))
-nta$count = t$cnt
-
-# nta
-# df %>% 
-#   group_by(nta_name) %>% 
-#   summarise(cnt = n()) %>% 
-#   arrange(desc(cnt))
-# 
-# df %>% 
-#   summarise(n())

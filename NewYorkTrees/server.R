@@ -1,80 +1,44 @@
 server <- function(input, output, session) {
 
-    #data <- reactive({
-    #     x <- df %>% 
-    #         mutate(location, paste0(df$latitude,':',df$longitude))
-    #    nyc_map <- get_map(location = c(lon = -74.00, lat = 40.71), maptype = "terrain", zoom = 11)
-    #})
-       
     output$distributionmap <- renderLeaflet({
         
-        leaflet(df) %>%
+        leaflet(tree_df_sample) %>%
             addTiles('Trees of NY') %>%
             setView(-74.00, 40.71, zoom = 10) %>%
             addProviderTiles("CartoDB.Positron") %>% 
-            addCircles(radius = 30, weight = 1, color = "#77AA77",
-                       fillColor = '#77AA77', fillOpacity = 0.5)
-        
-        # leaflet(Andrew) %>%
-        #     addProviderTiles("Esri.WorldStreetMap") %>%
-        #     addPolylines(~Long, ~Lat)
-        
+            addCircles(radius = 10, weight = 0, color = "#77AA77",
+                       fillColor = '#77AA77', fillOpacity = 0.3)
     })
     
     output$treemap <- renderLeaflet({
-        
         #bins <- c(0,30, 60, 90, 120, 150, 180, Inf)
-        #pal <- colorBin("viridis", domain = NULL, bins = bins)
-        pal <- colorNumeric("Greens", NULL)
+        #pal <- colorBin("BuGn", domain = NULL, bins = bins)
+        pal <- colorNumeric("BuGn", NULL)
+        pas_data = nta_map[[input$selected]]
         
-        leaflet(nta) %>%
+        leaflet(nta_map) %>%
             setView(-74.00, 40.71, zoom = 10) %>%
             addProviderTiles("CartoDB.Positron") %>% 
             addPolygons(label=~ntaname,
-                        fillColor = ~pal(count),
+                        fillColor = ~pal(pas_data),
                         color = 'white',
                         weight = 1,
                         smoothFactor = 0.5,
                         opacity = 0.5,
                         fillOpacity = 0.5,
+                        popup = paste('NTA name : ', nta_map$ntaname, '<br>',
+                                      'Count of tree : ', nta_map$count, '<br>',
+                                      'Density(tree per km2) : ', nta_map$countperarea),
                         highlightOptions = highlightOptions(color = "black",
                                                             weight = 1,
-                                                            bringToFront = T)) 
-        # %>%
-        #     addLegend(pal = pal, values = ~log10(pop), opacity = 1.0,
-        #               labFormat = labelFormat(transform = function(x) round(10^x)))
-        #     
-        # leaflet(Andrew) %>%
-        #     addProviderTiles("Esri.WorldStreetMap") %>%
-        #     addPolylines(~Long, ~Lat)
-        
-       
-            
-        
+                                                            bringToFront = T))  %>% 
+                   addLegend(label='density(per km2)',
+                      pal = pal,
+                      values = ~pas_data,
+                      opacity = 0.7,
+                      title = NULL,
+                      position = "topleft")
     })
     
     
-        
-        #ggmap(nyc_map) + 
-        #geom_polygon(data=df, aes(x=long, y=lat, group=group), color="blue", fill=NA)
-        
-        # renderGvis({
-        # gvisGeoChart(data = df, locationvar = 'location',
-        #              options=list(region="US-NY", displayMode="marker",
-        #                           resolution="metros",markerOpacity=0.5,
-        #                           width="500", height="500")
-        # )
-        #gvisHistogram(df[, input$selected, drop=F])
-        
-    # })
-        # renderLeaflet({
-        # df <- data()
-        # 
-        # leaflet(data = df) %>%
-        #     addTiles() %>%
-        #     addMarkers(lng = ~longitude,
-        #                lat = ~latitude,
-        #                popup = paste("NTA name", df$nta_name, "<br>",
-        #                              "SPEC:", df$spc_common))
-        # })
 }
