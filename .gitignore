@@ -1,0 +1,7 @@
+*.csv
+.git
+.git/*
+.RData
+.Rhistory
+.DS_Store
+NewYorkTrees/*.rds
