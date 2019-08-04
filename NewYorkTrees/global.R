@@ -11,17 +11,25 @@ tree_df <- readRDS('./tree_data.rds')
 tree_df_sample = tree_df[sample(nrow(tree_df),50000),]
 #air_df <- readRDS('./air_data.rds')
 #air_311_df <- readRDS('./air_311_data.rds')
-tree_311_df <- readRDS('./tree_311_data.rds')
+tree311_df <- readRDS('./tree_311_data.rds')
 
 #nta_map <- geojsonio::geojson_read("./NTAmap.geojson", what = "sp")
 #zip_map <- geojsonio::geojson_read("./ZIPmap.geojson", what = "sp")
 nta_map <- readRDS('./nta_map.rds')
 zip_map <- readRDS('./zip_map.rds')
+boro_map <- readRDS('./boro_map.rds')
 
 choice_dist <- c('All','Tree','Complaint')
 choice_nta <- colnames(as.data.frame(nta_map))[8:9]
 choice_zip <- colnames(as.data.frame(zip_map))[12:13]
 choice_zip_meta <- c('All','Tree only','Complaint only')
+choice_boro <- colnames(as.data.frame(boro_map))[5:8]
+choice_diam <- c('curb_loc','status','health','spc_common','steward','guards','sidewalk','problems','root_stone','root_grate','root_other','trunk_wire','trnk_light','trnk_other','brch_light','brch_shoe','brch_other','zip_city','borough')
+choice_column <- c('curb_loc','status','health','spc_common','steward','guards','sidewalk','problems','root_stone','root_grate','root_other','trunk_wire','trnk_light','trnk_other','brch_light','brch_shoe','brch_other','zip_city','borough')
+choice_compair_1 <- c('comp_cnt','tree_cnt','dbh_avg','request_new_cnt','dead_cnt','dead_dbh_avg','dead_cnt_ratio','rank_tree_cnt','rank_dbh_avg','rank_complaint_cnt','rank_request_cnt','rank_dead_cnt','rank_dead_dbh_avg')
+choice_compair_2 <- c('tree_cnt','comp_cnt','dbh_avg','request_new_cnt','dead_cnt','dead_dbh_avg','dead_cnt_ratio','rank_tree_cnt','rank_dbh_avg','rank_complaint_cnt','rank_request_cnt','rank_dead_cnt','rank_dead_dbh_avg')
+
+nta_data <- as.data.frame(nta_map)
 
 tree_df_type <- tree_df %>% 
   group_by(spc_common) %>% 
@@ -59,6 +67,57 @@ tree311_df_desc <- tree311_df %>%
   summarise(cnt = n()) %>% 
   arrange(desc(cnt))
 
+tree_df_rank <- tree_df %>% 
+  #filter(spc_common %in% tree_df_type$spc_common) %>%
+  group_by(spc_common) %>% 
+  mutate(tot_cnt = n()) %>% 
+  filter(health=='Good' & spc_common!='') %>% 
+  group_by(spc_common) %>% 
+  summarise(good_cnt = n(), tot_cnt = max(tot_cnt)) %>% 
+  mutate(ratio = good_cnt/tot_cnt, 
+         rank_ratio = dense_rank(desc(good_cnt/tot_cnt)), 
+         rank_count = dense_rank(desc(tot_cnt))) %>% 
+  arrange(desc(tot_cnt))
+
+
+tree_df_compare_complaint <- tree311_df %>%
+  filter(Complaint.Type!='New Tree Request') %>% 
+  group_by(Borough) %>% 
+  summarise(comp_cnt = n()) %>% 
+  mutate(rank_complaint_cnt = dense_rank(desc(comp_cnt))) %>% 
+  arrange(comp_cnt)
+
+tree_df_compare_request <- tree311_df %>%
+  filter(Complaint.Type=='New Tree Request') %>% 
+  group_by(Borough) %>% 
+  summarise(request_new_cnt = n()) %>% 
+  mutate(rank_request_new_cnt = dense_rank(desc(request_new_cnt))) %>% 
+  arrange(request_new_cnt)
+
+tree_df_compare_tree <- tree_df %>% 
+  mutate(Borough = toupper(borough)) %>% 
+  group_by(Borough) %>% 
+  summarise(tree_cnt = n(), dbh_avg = mean(tree_dbh)) %>% 
+  mutate(rank_tree_cnt = dense_rank(desc(tree_cnt)),
+         rank_dbh_avg = dense_rank(desc(dbh_avg))) %>% 
+  arrange(tree_cnt)
+
+tree_df_dead_tree <- tree_df %>% 
+  filter(status=='Dead') %>% 
+  mutate(Borough = toupper(borough)) %>% 
+  group_by(Borough) %>% 
+  summarise(dead_cnt = n(), dead_dbh_avg = mean(tree_dbh)) %>% 
+  mutate(rank_dead_cnt = dense_rank(desc(dead_cnt)),
+         rank_dead_dbh_avg = dense_rank(desc(dead_dbh_avg))) %>% 
+  arrange(dead_cnt)
+
+tree_df_compare <- left_join(tree_df_compare_tree, tree_df_compare_complaint, by='Borough')
+tree_df_compare <- left_join(tree_df_compare, tree_df_compare_request, by='Borough')
+tree_df_compare <- left_join(tree_df_compare, tree_df_dead_tree, by='Borough')
+tree_df_compare <- tree_df_compare %>% 
+  mutate(dead_cnt_ratio = dead_cnt/tree_cnt)
+
+# for adjust abnormal value
 nta_map_view <- nta_map
 nta_map_view$countperarea = ifelse(nta_map$countperarea > 2000, 2000, nta_map$countperarea)
 zip_map_view <- zip_map 
