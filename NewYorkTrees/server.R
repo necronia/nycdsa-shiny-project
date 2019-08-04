@@ -282,10 +282,10 @@ server <- function(input, output, session) {
     
     output$treeCompare <- renderGvis({
         gvisLineChart(group_compare_tree(), xvar='Borough', yvar=c(input$selected_compare_1,input$selected_compare_2),
-                        options=list(title='NYC Tree average diameter by various column',
+                        options=list(title='NYC Tree data comparision',
                                      series="[{targetAxisIndex: 0}, {targetAxisIndex:1}]",
                                      colors="['#EF5350','#5C6BC0','#26C6DA','#D4E157','#FFEE58','#FFA726','#FF7043','#BDBDBD','#26A69A','#78909C','#7E57C2','#42A5F5','#26C6DA','#26A69A','#29B6F6','#66BB6A','#FFEE58','#FF7043','#8D6E63']",
-                                     vAxes="[{title:''},{title:''}]",
+                                     vAxes="[{title:'Red line'},{title:'Blue line'}]",
                                      width=700,height=420))
     })
     

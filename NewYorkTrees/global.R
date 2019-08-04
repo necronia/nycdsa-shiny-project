@@ -26,8 +26,8 @@ choice_zip_meta <- c('All','Tree only','Complaint only')
 choice_boro <- colnames(as.data.frame(boro_map))[5:8]
 choice_diam <- c('curb_loc','status','health','spc_common','steward','guards','sidewalk','problems','root_stone','root_grate','root_other','trunk_wire','trnk_light','trnk_other','brch_light','brch_shoe','brch_other','zip_city','borough')
 choice_column <- c('curb_loc','status','health','spc_common','steward','guards','sidewalk','problems','root_stone','root_grate','root_other','trunk_wire','trnk_light','trnk_other','brch_light','brch_shoe','brch_other','zip_city','borough')
-choice_compair_1 <- c('comp_cnt','tree_cnt','dbh_avg','request_new_cnt','dead_cnt','dead_dbh_avg','dead_cnt_ratio','rank_tree_cnt','rank_dbh_avg','rank_complaint_cnt','rank_request_cnt','rank_dead_cnt','rank_dead_dbh_avg')
-choice_compair_2 <- c('tree_cnt','comp_cnt','dbh_avg','request_new_cnt','dead_cnt','dead_dbh_avg','dead_cnt_ratio','rank_tree_cnt','rank_dbh_avg','rank_complaint_cnt','rank_request_cnt','rank_dead_cnt','rank_dead_dbh_avg')
+choice_compair_1 <- c('comp_cnt','tree_cnt','dbh_avg','request_new_cnt','dead_cnt','dead_dbh_avg','dead_cnt_ratio','rank_tree_cnt','rank_dbh_avg','rank_complaint_cnt','rank_request_new_cnt','rank_dead_cnt','rank_dead_dbh_avg')
+choice_compair_2 <- c('tree_cnt','comp_cnt','dbh_avg','request_new_cnt','dead_cnt','dead_dbh_avg','dead_cnt_ratio','rank_tree_cnt','rank_dbh_avg','rank_complaint_cnt','rank_request_new_cnt','rank_dead_cnt','rank_dead_dbh_avg')
 
 nta_data <- as.data.frame(nta_map)
 
