@@ -6,3 +6,4 @@
 .DS_Store
 NewYorkTrees/*.rds
 NewYorkTrees/json/*
+NewYorkTrees/rsconnect/*
