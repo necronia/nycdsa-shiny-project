@@ -1,7 +1,6 @@
 shinyUI(dashboardPage(
   dashboardHeader(title = 'NYC Tree Dashboard'),
   dashboardSidebar(
-    #sidebarUserPanel(name = 'aaa'),
     sidebarMenu(
       menuItem(text = 'Distribution',tabName = 'distribution', icon = icon('map')),
       menuItem(text = 'NTA Map',tabName = 'ntamap', icon = icon('map')),
@@ -18,18 +17,12 @@ shinyUI(dashboardPage(
   dashboardBody(
     tabItems(
       tabItem(tabName = 'distribution',
-              #fluidRow(infoBoxOutput("treemap"))),
-              #          infoBoxOutput("minBox"),
-              #          infoBoxOutput("avgBox")),
               fluidRow(box(leafletOutput('distributionmap',height = 500),width = 12)),
               selectizeInput('selected_dist','Select Item to Display', choice_dist)),
-              #         box(htmlOutput('hist'), height=300))),
       tabItem(tabName = 'ntamap',
               fluidRow(box(leafletOutput('ntatreemap'),width=6),
                        column(htmlOutput('ntatreedata'),width=6)),
               selectizeInput('selected_nta','Select Item to Display', choice_nta)),
-              #fluidRow(infoBoxOutput("treemap"))
-              #fluidRow(box(DT::dataTableOutput('table'), width=12))
       tabItem(tabName = 'zipmap',
               fluidRow(box(leafletOutput('ziptreemap'),width=12)),
               selectizeInput('selected_zip_meta','Select Item to Display meta', choice_zip_meta),
@@ -37,7 +30,6 @@ shinyUI(dashboardPage(
       tabItem(tabName = 'boromap',
               fluidRow(box(leafletOutput('borotreemap'),width=12)),
               selectizeInput('selected_boro','Select Item to Display', choice_boro)),
-              # selectizeInput('selected_zip','Select Item to Display', choice_zip)),
       tabItem(tabName = 'treegraphs',
               fluidRow(box(htmlOutput('treeType'),width=6),
                        box(htmlOutput('treeStatus'),width=6)),

@@ -9,12 +9,8 @@ library(tidyverse)
 
 tree_df <- readRDS('./tree_data.rds')
 tree_df_sample = tree_df[sample(nrow(tree_df),50000),]
-#air_df <- readRDS('./air_data.rds')
-#air_311_df <- readRDS('./air_311_data.rds')
 tree311_df <- readRDS('./tree_311_data.rds')
 
-#nta_map <- geojsonio::geojson_read("./NTAmap.geojson", what = "sp")
-#zip_map <- geojsonio::geojson_read("./ZIPmap.geojson", what = "sp")
 nta_map <- readRDS('./nta_map.rds')
 zip_map <- readRDS('./zip_map.rds')
 boro_map <- readRDS('./boro_map.rds')

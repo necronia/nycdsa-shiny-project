@@ -46,8 +46,6 @@ server <- function(input, output, session) {
     })
     
     output$ntatreemap <- renderLeaflet({
-        #bins <- c(0,30, 60, 90, 120, 150, 180, Inf)
-        #pal <- colorBin("BuGn", domain = NULL, bins = bins)
         pal <- colorNumeric("BuGn", NULL)
         pas_data = nta_map_view[[input$selected_nta]]
         
@@ -213,7 +211,6 @@ server <- function(input, output, session) {
     })
     
     output$treeType <- renderGvis({
-        # gvisHistogram(tree_df_type[,input$selected, drop=FALSE])
         gvisColumnChart(draw_treeType(), xvar='spc_common', yvar='cnt',
                         options=list(title='NYC Tree Type',
                                      colors="['#77AA77']",
