@@ -24,6 +24,8 @@ choice_nta <- colnames(as.data.frame(nta_map))[8:9]
 choice_zip <- colnames(as.data.frame(zip_map))[12:13]
 choice_zip_meta <- c('All','Tree only','Complaint only')
 choice_boro <- colnames(as.data.frame(boro_map))[5:8]
+choice_tree <- c('All','Manhattan','Bronx','Staten Island','Brooklyn','Queens')
+choice_compl <- c('All','MANHATTAN','BRONX','STATEN ISLAND','BROOKLYN','QUEENS')
 choice_diam <- c('curb_loc','status','health','spc_common','steward','guards','sidewalk','problems','root_stone','root_grate','root_other','trunk_wire','trnk_light','trnk_other','brch_light','brch_shoe','brch_other','zip_city','borough')
 choice_column <- c('curb_loc','status','health','spc_common','steward','guards','sidewalk','problems','root_stone','root_grate','root_other','trunk_wire','trnk_light','trnk_other','brch_light','brch_shoe','brch_other','zip_city','borough')
 choice_compair_1 <- c('comp_cnt','tree_cnt','dbh_avg','request_new_cnt','dead_cnt','dead_dbh_avg','dead_cnt_ratio','rank_tree_cnt','rank_dbh_avg','rank_complaint_cnt','rank_request_new_cnt','rank_dead_cnt','rank_dead_dbh_avg')
@@ -32,40 +34,33 @@ choice_compair_2 <- c('tree_cnt','comp_cnt','dbh_avg','request_new_cnt','dead_cn
 nta_data <- as.data.frame(nta_map)
 
 tree_df_type <- tree_df %>% 
-  group_by(spc_common) %>% 
+  group_by(spc_common, borough) %>% 
   summarise(cnt = n()) %>% 
-  filter(!is.na(spc_common)) %>% 
-  arrange(desc(cnt)) %>% 
-  top_n(20)
+  filter(!is.na(spc_common)) 
 
 tree_df_status <- tree_df %>% 
-  group_by(status) %>% 
+  group_by(status, borough) %>% 
   summarise(cnt = n()) %>% 
-  filter(!is.na(status)) %>% 
-  arrange(desc(cnt)) 
+  filter(!is.na(status)) 
 
 tree_df_health <- tree_df %>% 
-  group_by(health) %>% 
+  group_by(health, borough) %>% 
   summarise(cnt = n()) %>% 
-  filter(!is.na(health) & health!='') %>% 
-  arrange(desc(cnt)) 
+  filter(!is.na(health) & health!='')
 
 tree_df_dbh <- tree_df %>% 
   mutate(tree_dbh = ifelse(tree_dbh>50,50,tree_dbh)) %>% 
-  group_by(tree_dbh) %>% 
+  group_by(tree_dbh, borough) %>% 
   summarise(cnt = n()) %>% 
-  filter(!is.na(tree_dbh) & tree_dbh>0) %>% 
-  arrange(desc(cnt))
+  filter(!is.na(tree_dbh) & tree_dbh>0)
 
 tree311_df_type <- tree311_df %>% 
-  group_by(Complaint.Type) %>% 
-  summarise(cnt = n()) %>% 
-  arrange(desc(cnt))
+  group_by(Complaint.Type, Borough) %>% 
+  summarise(cnt = n()) 
 
 tree311_df_desc <- tree311_df %>% 
-  group_by(Descriptor) %>% 
-  summarise(cnt = n()) %>% 
-  arrange(desc(cnt))
+  group_by(Descriptor, Borough) %>% 
+  summarise(cnt = n()) 
 
 tree_df_rank <- tree_df %>% 
   #filter(spc_common %in% tree_df_type$spc_common) %>%

@@ -282,3 +282,25 @@ tree_df_compare <- left_join(tree_df_compare, tree_df_dead_tree, by='Borough')
 
 tree_df_compare <- tree_df_compare %>% 
   mutate(dead_cnt_ratio = dead_cnt/tree_cnt)
+
+temp = tree_df %>% 
+  #filter(borough %in% c('Manhattan','Queens')) %>% 
+  group_by(borough) %>% 
+  summarise(s = sd(tree_dbh), mx = max(tree_dbh))
+
+
+tree_df %>% 
+  filter(spc_common=='London planetree') %>% 
+  group_by(borough) %>% 
+  summarise(n=n(), s=sd(tree_dbh), a=mean(tree_dbh))
+
+tree_df %>% 
+  filter(spc_common=='honeylocust') %>% 
+  group_by(borough) %>% 
+  summarise(n=n(), s=sd(tree_dbh), a=mean(tree_dbh))
+
+tree_df %>% 
+  filter(grepl('BranchLights',problems)) %>% 
+  select(problems, tree_dbh) %>% 
+  summarise(mean(tree_dbh))
+         

@@ -195,44 +195,126 @@ server <- function(input, output, session) {
                       position = "topleft")
     })
     
+    draw_treeType <- reactive({
+        if(input$selected_tree == 'All'){
+            tree_df_type %>% 
+                group_by(spc_common) %>% 
+                summarise(cnt = sum(cnt)) %>% 
+                arrange(desc(cnt)) %>% 
+                top_n(20)
+        }else{
+            tree_df_type %>% 
+                filter(borough==input$selected_tree) %>% 
+                group_by(spc_common) %>% 
+                summarise(cnt = sum(cnt)) %>% 
+                arrange(desc(cnt)) %>% 
+                top_n(20)
+        }
+    })
+    
     output$treeType <- renderGvis({
         # gvisHistogram(tree_df_type[,input$selected, drop=FALSE])
-        gvisColumnChart(tree_df_type, xvar='spc_common', yvar='cnt',
+        gvisColumnChart(draw_treeType(), xvar='spc_common', yvar='cnt',
                         options=list(title='NYC Tree Type',
                                      colors="['#77AA77']",
                                      vAxes="[{title:'count'},{title:'Tree Type'}]"))
     })
     
+    draw_treeStatus <- reactive({
+        if(input$selected_tree == 'All'){
+            tree_df_status %>% 
+                group_by(status) %>% 
+                summarise(cnt = sum(cnt)) %>% 
+                arrange(desc(cnt)) 
+        }else{
+            tree_df_status %>% 
+                filter(borough==input$selected_tree) %>% 
+                arrange(desc(cnt))
+        }
+    })
+    
     output$treeStatus <- renderGvis({
-        gvisColumnChart(tree_df_status, xvar='status', yvar='cnt',
+        gvisColumnChart(draw_treeStatus(), xvar='status', yvar='cnt',
                         options=list(title='NYC Tree Status',
                                      colors="['#cbb69d']",
                                      vAxes="[{title:'count'},{title:'Tree Type'}]"))
     })
     
+    draw_treeHealth <- reactive({
+        if(input$selected_tree == 'All'){
+            tree_df_health %>% 
+                group_by(health) %>% 
+                summarise(cnt = sum(cnt)) %>% 
+                arrange(desc(cnt)) 
+        }else{
+            tree_df_health %>% 
+                filter(borough==input$selected_tree) %>% 
+                arrange(desc(cnt))
+        }
+    })
+    
     output$treeHealth <- renderGvis({
-        gvisColumnChart(tree_df_health, xvar='health', yvar='cnt',
+        gvisColumnChart(draw_treeHealth(), xvar='health', yvar='cnt',
                         options=list(title='NYC Tree Health',
                                      colors="['#cb688d']",
                                      vAxes="[{title:'count'},{title:'Tree Type'}]"))
     })
     
+    draw_treeDbh <- reactive({
+        if(input$selected_tree == 'All'){
+            tree_df_dbh %>% 
+                group_by(tree_dbh) %>% 
+                summarise(cnt = sum(cnt)) %>% 
+                arrange(desc(cnt)) 
+        }else{
+            tree_df_dbh %>% 
+                filter(borough==input$selected_tree) %>% 
+                arrange(desc(cnt))
+        }
+    })
+    
     output$treeDbh <- renderGvis({
-        gvisColumnChart(tree_df_dbh, xvar='tree_dbh', yvar='cnt',
+        gvisColumnChart(draw_treeDbh(), xvar='tree_dbh', yvar='cnt',
                         options=list(title='NYC Tree diameter',
                                      colors="['#8b96cd']",
                                      vAxes="[{title:'count'},{title:'Tree Type'}]"))
     })
     
+    draw_complatintType <- reactive({
+        if(input$selected_compl == 'All'){
+            tree311_df_type %>% 
+                group_by(Complaint.Type) %>% 
+                summarise(cnt = sum(cnt)) %>% 
+                arrange(desc(cnt)) 
+        }else{
+            tree311_df_type %>% 
+                filter(Borough==input$selected_compl) %>% 
+                arrange(desc(cnt))
+        }
+    })
+    
     output$complatintType <- renderGvis({
-        gvisColumnChart(tree311_df_type, xvar='Complaint.Type', yvar='cnt',
+        gvisColumnChart(draw_complatintType(), xvar='Complaint.Type', yvar='cnt',
                         options=list(title='NYC Tree Complaint by type',
                                      colors="['#db588d']",
                                      vAxes="[{title:'count'},{title:'Tree Type'}]"))
     })
     
+    draw_complaintDesc <- reactive({
+        if(input$selected_compl == 'All'){
+            tree311_df_desc %>% 
+                group_by(Descriptor) %>% 
+                summarise(cnt = sum(cnt)) %>% 
+                arrange(desc(cnt)) 
+        }else{
+            tree311_df_desc %>% 
+                filter(Borough==input$selected_compl) %>% 
+                arrange(desc(cnt))
+        }
+    })
+    
     output$complaintDesc <- renderGvis({
-        gvisColumnChart(tree311_df_desc, xvar='Descriptor', yvar='cnt',
+        gvisColumnChart(draw_complaintDesc(), xvar='Descriptor', yvar='cnt',
                         options=list(title='NYC Tree Complaint by descriptor',
                                      colors="['#cbc8dd']",
                                      vAxes="[{title:'count'},{title:'Tree Type'}]"))
