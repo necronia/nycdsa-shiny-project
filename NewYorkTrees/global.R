@@ -15,11 +15,12 @@ nta_map <- readRDS('./nta_map.rds')
 zip_map <- readRDS('./zip_map.rds')
 boro_map <- readRDS('./boro_map.rds')
 
-choice_dist <- c('All','Tree','Complaint')
-choice_nta <- colnames(as.data.frame(nta_map))[8:9]
-choice_zip <- colnames(as.data.frame(zip_map))[12:13]
-choice_zip_meta <- c('All','Tree only','Complaint only')
-choice_boro <- colnames(as.data.frame(boro_map))[5:8]
+choice_dist <- c('Tree','Complaint','All')
+choice_nta <- colnames(as.data.frame(nta_map))[9:8]
+choice_zip <- colnames(as.data.frame(zip_map))[13:12]
+choice_zip_meta <- c('Tree only','Complaint only','All')
+choice_boro <- colnames(as.data.frame(boro_map))[c(6,8,5,7)]
+choice_rank <- c('All','Top20')
 choice_tree <- c('All','Manhattan','Bronx','Staten Island','Brooklyn','Queens')
 choice_compl <- c('All','MANHATTAN','BRONX','STATEN ISLAND','BROOKLYN','QUEENS')
 choice_diam <- c('curb_loc','status','health','spc_common','steward','guards','sidewalk','problems','root_stone','root_grate','root_other','trunk_wire','trnk_light','trnk_other','brch_light','brch_shoe','brch_other','zip_city','borough')
@@ -59,7 +60,6 @@ tree311_df_desc <- tree311_df %>%
   summarise(cnt = n()) 
 
 tree_df_rank <- tree_df %>% 
-  #filter(spc_common %in% tree_df_type$spc_common) %>%
   group_by(spc_common) %>% 
   mutate(tot_cnt = n()) %>% 
   filter(health=='Good' & spc_common!='') %>% 
@@ -70,6 +70,23 @@ tree_df_rank <- tree_df %>%
          rank_count = dense_rank(desc(tot_cnt))) %>% 
   arrange(desc(tot_cnt))
 
+tree_top_20 <- tree_df %>% 
+  filter(spc_common != '') %>% 
+  group_by(spc_common) %>% 
+  summarise(n()) %>% 
+  top_n(20)
+
+tree_df_rank_20 <- tree_df %>% 
+  filter(spc_common %in% tree_top_20$spc_common) %>%
+  group_by(spc_common) %>% 
+  mutate(tot_cnt = n()) %>% 
+  filter(health=='Good' & spc_common!='') %>% 
+  group_by(spc_common) %>% 
+  summarise(good_cnt = n(), tot_cnt = max(tot_cnt)) %>% 
+  mutate(ratio = good_cnt/tot_cnt, 
+         rank_ratio = dense_rank(desc(good_cnt/tot_cnt)), 
+         rank_count = dense_rank(desc(tot_cnt))) %>% 
+  arrange(desc(tot_cnt))
 
 tree_df_compare_complaint <- tree311_df %>%
   filter(Complaint.Type!='New Tree Request') %>% 

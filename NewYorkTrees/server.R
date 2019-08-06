@@ -83,7 +83,7 @@ server <- function(input, output, session) {
                         options=list(title='NYC Tree Count by NTA',
                                      colors="['#abe8bd']",
                                      vAxes="[{title:'count'},{title:'Tree Type'}]",
-                                     height=420)
+                                     legend='none',height=420)
         )
     })
     
@@ -211,10 +211,12 @@ server <- function(input, output, session) {
     })
     
     output$treeType <- renderGvis({
-        gvisColumnChart(draw_treeType(), xvar='spc_common', yvar='cnt',
+        gvisBarChart(draw_treeType(), xvar='spc_common', yvar='cnt',
                         options=list(title='NYC Tree Type',
                                      colors="['#77AA77']",
-                                     vAxes="[{title:'count'},{title:'Tree Type'}]"))
+                                     vAxes="[{title:'count'},{title:'Tree Type'}]",
+                                     legend='none',
+                                     height=300))
     })
     
     draw_treeStatus <- reactive({
@@ -234,7 +236,8 @@ server <- function(input, output, session) {
         gvisColumnChart(draw_treeStatus(), xvar='status', yvar='cnt',
                         options=list(title='NYC Tree Status',
                                      colors="['#cbb69d']",
-                                     vAxes="[{title:'count'},{title:'Tree Type'}]"))
+                                     vAxes="[{title:'count'},{title:'Tree Type'}]",
+                                     legend='none'))
     })
     
     draw_treeHealth <- reactive({
@@ -254,7 +257,8 @@ server <- function(input, output, session) {
         gvisColumnChart(draw_treeHealth(), xvar='health', yvar='cnt',
                         options=list(title='NYC Tree Health',
                                      colors="['#cb688d']",
-                                     vAxes="[{title:'count'},{title:'Tree Type'}]"))
+                                     vAxes="[{title:'count'},{title:'Tree Type'}]",
+                                     legend='none'))
     })
     
     draw_treeDbh <- reactive({
@@ -271,10 +275,12 @@ server <- function(input, output, session) {
     })
     
     output$treeDbh <- renderGvis({
-        gvisColumnChart(draw_treeDbh(), xvar='tree_dbh', yvar='cnt',
+        gvisBarChart(draw_treeDbh(), xvar='tree_dbh', yvar='cnt',
                         options=list(title='NYC Tree diameter',
                                      colors="['#8b96cd']",
-                                     vAxes="[{title:'count'},{title:'Tree Type'}]"))
+                                     vAxes="[{title:'count'},{title:'Tree Type'}]",
+                                     legend='none',
+                                     height=300))
     })
     
     draw_complatintType <- reactive({
@@ -293,8 +299,9 @@ server <- function(input, output, session) {
     output$complatintType <- renderGvis({
         gvisColumnChart(draw_complatintType(), xvar='Complaint.Type', yvar='cnt',
                         options=list(title='NYC Tree Complaint by type',
-                                     colors="['#db588d']",
-                                     vAxes="[{title:'count'},{title:'Tree Type'}]"))
+                                     colors="['#FF7043']",
+                                     vAxes="[{title:'count'},{title:'Tree Type'}]",
+                                     legend='none'))
     })
     
     draw_complaintDesc <- reactive({
@@ -313,12 +320,21 @@ server <- function(input, output, session) {
     output$complaintDesc <- renderGvis({
         gvisColumnChart(draw_complaintDesc(), xvar='Descriptor', yvar='cnt',
                         options=list(title='NYC Tree Complaint by descriptor',
-                                     colors="['#cbc8dd']",
-                                     vAxes="[{title:'count'},{title:'Tree Type'}]"))
+                                     colors="['#8D6E63']",
+                                     vAxes="[{title:'count'},{title:'Tree Type'}]",
+                                     legend='none'))
+    })
+    
+    draw_tree_rank <- reactive({
+        if(input$selected_rank =='All'){
+            tree_df_rank
+        }else{
+            tree_df_rank_20
+        }
     })
     
     output$treeRank <- renderGvis({
-        gvisLineChart(tree_df_rank, xvar='spc_common', yvar=c('rank_count','rank_ratio'),
+        gvisLineChart(draw_tree_rank(), xvar='spc_common', yvar=c('rank_count','rank_ratio'),
                         options=list(title='NYC Tree rank by count and good health ratio',
                                      colors="['#cbc8dd','#7aa3d9']",
                                      vAxes="[{title:'rank'},{title:'Tree Type'}]",
@@ -335,8 +351,9 @@ server <- function(input, output, session) {
     output$treeDiam <- renderGvis({
         gvisColumnChart(group_diam_tree(), xvar=input$selected_diam, yvar='avg',
                         options=list(title='NYC Tree average diameter by various column',
-                                     colors="['#FFA726','#FF7043','#BDBDBD','#26A69A','#78909C','#7E57C2','#42A5F5','#26C6DA','#26A69A','#29B6F6','#66BB6A','#FFEE58','#FF7043','#8D6E63']",
+                                     colors="['#42A5F5','#26C6DA','#26A69A','#29B6F6','#66BB6A','#FFEE58','#FF7043','#8D6E63']",
                                      vAxes="[{title:'AVG(diameter)'},{title:'Tree Type'}]",
+                                     legend='none',
                                      width=700,height=420))
     })
     
