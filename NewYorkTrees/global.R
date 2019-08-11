@@ -8,8 +8,9 @@ library(DT)
 library(tidyverse)
 
 tree_df <- readRDS('./tree_data.rds')
-tree_df_sample = tree_df[sample(nrow(tree_df),50000),]
+tree_df_sample = tree_df[sample(nrow(tree_df),10000),]
 tree311_df <- readRDS('./tree_311_data.rds')
+tree311_df_sample = tree311_df[sample(nrow(tree311_df),10000),]
 
 nta_map <- readRDS('./nta_map.rds')
 zip_map <- readRDS('./zip_map.rds')

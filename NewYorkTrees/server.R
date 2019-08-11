@@ -4,7 +4,7 @@ server <- function(input, output, session) {
         if(input$selected_dist == 'Tree'){
             tree_df_sample
         }else if(input$selected_dist == 'Complaint'){
-            tree311_df
+            tree311_df_sample
         }
     })
     
@@ -22,9 +22,9 @@ server <- function(input, output, session) {
                 addTiles('Trees of NY') %>%
                 setView(-74.00, 40.71, zoom = 10) %>%
                 addProviderTiles("CartoDB.Positron") %>% 
-                addCircles(data = tree_df_sample, radius = 10, weight = 0, color = "#77AA77",
+                addCircles(data = tree_df_sample, radius = 50, weight = 0, color = "#77AA77",
                            fillColor = "#77AA77", fillOpacity = 0.3) %>% 
-                addCircles(data = tree311_df, radius = 10, weight = 0, color = "#AA7777",
+                addCircles(data = tree311_df_sample, radius = 50, weight = 0, color = "#AA7777",
                            fillColor = "#AA7777", fillOpacity = 0.3) %>% 
                 addLegend(labels = c("Num.of Trees","Num.of Complaints"),
                           colors = c("#77AA77","#AA7777"),
@@ -36,7 +36,7 @@ server <- function(input, output, session) {
                 addTiles('Trees of NY') %>%
                 setView(-74.00, 40.71, zoom = 10) %>%
                 addProviderTiles("CartoDB.Positron") %>% 
-                addCircles(radius = 10, weight = 0, color = dot_color(),
+                addCircles(radius = 50, weight = 0, color = dot_color(),
                            fillColor = dot_color(), fillOpacity = 0.3)
         }
     })
